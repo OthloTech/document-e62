@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2020-10-15T18:03:07+09:00",
+  "id": "docs",
+  "duration": 20,
+  "title": "Firebase×JavaScript 1DAY実践ハンズオン【事前準備編】",
+  "summary": "Firebaseハンズオン資料",
+  "source": "document.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "codelab",
+    "markdown"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "A link where users can go to provide feedback (Maybe the git repo)",
+  "ga": "Google Analytics ID",
+  "url": "docs"
+}
