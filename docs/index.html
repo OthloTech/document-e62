@@ -33,6 +33,13 @@
 <p>Firebaseとは、Firebase Incが開発し、現在では買収先のGoogleが提供しているモバイル・Webアプリケーション開発プラットフォームです。</p>
 <h2 is-upgraded>今回学ぶ製品</h2>
 <p>Firebaseには18個以上の製品があります。 今回はその中から3つ利用します。</p>
+<h2 is-upgraded>Firebase</h2>
+<h2 is-upgraded>Firebase Hosting</h2>
+<p>Firebase Hostingは、作成したWebアプリケーションを簡単にホスティングできるサービスです。</p>
+<p><a href="https://firebase.google.com/products/hosting?hl=ja" target="_blank">Firebase Hosting - Firebase</a></p>
+<h2 is-upgraded>Realtime Database</h2>
+<p>Realtime Databaseはリアルタイムでデータを共有/同期できるNoSQLのデータベースです。</p>
+<p><a href="https://firebase.google.com/products/realtime-database?hl=ja" target="_blank">Firebase Realtime Database - Firebase</a><a href="https://qiita.com/t_nakayama0714/items/0ff7644666f0122cfba1" target="_blank">NoSQLについて勉強する。 - Qiita</a></p>
 
 
       </google-codelab-step>
@@ -63,7 +70,7 @@
 <p class="image-container"><img src="img\a608817c2e163d8a.png"></p>
 <p>FirebaseSDKを追加します。 表示されているスクリプトをコピーしてください。</p>
 <p class="image-container"><img src="img\e4bdb4973a233958.png"></p>
-<p>index.htmlのhead内の「Firebase追加部分」にペーストしてください。</p>
+<p>index.htmlのhead内の「Firebase SDKの追加部分」にペーストしてください。</p>
 <pre><code language="language-html" class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
@@ -85,7 +92,76 @@
     &lt;link rel=&#34;stylesheet&#34; href=&#34;./css/style.css&#34;&gt;
   &lt;/head&gt;
 </code></pre>
+<p>続いてFirebaseCLIのインストールについて出てきますが、こちらは事前準備の際に行っていただいた内容になりますので、そのまま次に進んでいただいて大丈夫です。</p>
+<p class="image-container"><img src="img\4193e304966eaf60.png"></p>
+<p>続いてもひとまず飛ばして、コンソールへ進んでください。</p>
+<p class="image-container"><img src="img\f5820f11eac6849d.png"></p>
+<p>これで、FirebaseへのWebアプリケーションの追加が完了しました。</p>
 
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="テンプレートのダウンロード" duration="3">
+        <p>今回は、1からCSSやHTMLを書いていくのは大変ですので、こちらで用意したプロジェクトを基に開発していただきます。 GitHub上にコードが置いてあるので、GitHubを利用したことのある方は、cloneをお願い致します。</p>
+<h2 is-upgraded>GitHubを利用されている方</h2>
+<p>任意のディレクトリにてクローンしてください。</p>
+<pre>git clone git@github.com:OthloTech/firebase-hands-on.git
+</pre>
+<h2 is-upgraded>GitHubを利用されていない方</h2>
+<p>まずは、以下のサイトにアクセスしてください。</p>
+<p><a href="https://github.com/OthloTech/firebase-hands-on" target="_blank">OthloTech/firebase-hands-on - GitHub</a></p>
+<p>続いて、緑色のcodeボタンを押して、「Download ZIP」を押してZIPファイルをダウンロードしてください。</p>
+<p class="image-container"><img src="img\f5820f11eac6849d.png"></p>
+<p>ダウンロードした zipファイルを開き、中のプロジェクトを任意のディレクトリにペーストしてください。</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Firebase CLIでの初期化" duration="8">
+        <p>事前準備の際にインストールしていただいたFirebase CLIを利用していきます。 まずは先程プロジェクトをクローン/ペーストしたディレクトリに移動し、初期化を行います。</p>
+<pre>$ firebase init
+</pre>
+<p>以下のような質問が表示された場合は<code>y</code>と答えてください。</p>
+<pre><code>? Are you ready to proceed? (Y/n) y
+</code></pre>
+<p>続いて、利用する製品を選択します。 今回は、</p>
+<ul>
+<li>RealtimeDatabase</li>
+<li>Hosting を利用するので、<strong>Database</strong>と<strong>Hosting</strong>を選択してください。</li>
+</ul>
+<pre>? Which Firebase CLI features do you want to set up for this folder? Press Space to select features, then Enter to confirm your choices.
+❯◉ Database: Deploy Firebase Realtime Database Rules
+ ◯ Firestore: Deploy rules and create indexes for Firestore
+ ◯ Functions: Configure and deploy Cloud Functions
+❯◉ Hosting: Configure and deploy Firebase Hosting sites
+ ◯ Storage: Deploy Cloud Storage security rules
+ ◯ Emulators: Set up local emulators for Firebase features
+ ◯ Remote Config: Get, deploy, and rollback configurations for Remote Config
+</pre>
+<p>選択方法はスペースキーを押すと選択できます。十字キーで移動し、選択完了後はEnterキーを押してください。</p>
+<p>続いて、プロジェクトの選択を行います。 実は先程ブラウザ上で行ったプロジェクト作成作業はCLIでもできるのですが、今回は作成してあるので、「Use an existing project」を選択します。</p>
+<pre><code>? Please select an option:
+  Use an existing project
+&gt; Create a new project
+  Add Firebase to an existing Google Cloud Platform project
+  Don&#39;t set up a default project
+</code></pre>
+<p>先程作成したプロジェクトを選択してください。</p>
+<pre>? Select a default Firebase project for this directory:
+&gt; fir-hands-on-xxx (firebase-hands-on)
+</pre>
+<p>後は以下のように答えてください。</p>
+<pre>? What do you want to use as your public directory? public
+? Configure as a single-page app (rewrite all urls to /index.html)? No
++  Wrote public/404.html
+? File public/index.html already exists. Overwrite? No
+</pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Databaseの設定" duration="0">
+        
 
       </google-codelab-step>
     
