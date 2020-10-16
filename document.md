@@ -7,7 +7,7 @@ status: Published
 feedback link: A link where users can go to provide feedback (Maybe the git repo)
 analytics account: Google Analytics ID
 
-# Firebase×JavaScript 1DAY実践ハンズオン【事前準備編】
+# Firebase×JavaScript 1DAY実践ハンズオン
 
 ## Firebaseを学ぼう！
 Duration: 0:05:00
@@ -56,6 +56,49 @@ Duration: 0:10:00
 下の画面のようにプロジェクトの作成が完了したら[続行]を押してください。
 
 ![](./img/new_project5.png)
+
+## Webアプリの追加
+Duration: 0:05:00
+
+Webアプリケーションを追加します。
+プロジェクトのホーム画面からWebのロゴをクリックしてください。
+
+![](./img/new_project6.png)
+
+名前を指定して、[このアプリのFirebase Hostingも設定します。]にチェックを入れます。
+
+![](./img/web2.png)
+
+FirebaseSDKを追加します。
+表示されているスクリプトをコピーしてください。
+
+![](./img/web3.png)
+
+index.htmlのhead内の「Firebase追加部分」にペーストしてください。
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+
+    <!-- Firebase SDKの追加部分 開始 -->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="/__/firebase/7.23.0/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+
+    <!-- Initialize Firebase -->
+    <script src="/__/firebase/init.js"></script>
+    <!-- Firebase SDKの追加部分 終了 -->
+
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+```
+
 
 
 ## プロジェクト
