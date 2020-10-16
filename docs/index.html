@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#4F7DC9">
   <meta charset="UTF-8">
-  <title>Firebase×JavaScript 1DAY実践ハンズオン【事前準備編】</title>
+  <title>Firebase×JavaScript 1DAY実践ハンズオン</title>
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
   <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
@@ -23,7 +23,7 @@
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
   <google-codelab codelab-gaid="Google Analytics ID"
                   id="docs"
-                  title="Firebase×JavaScript 1DAY実践ハンズオン【事前準備編】"
+                  title="Firebase×JavaScript 1DAY実践ハンズオン"
                   environment="web"
                   feedback-link="A link where users can go to provide feedback (Maybe the git repo)">
     
@@ -52,6 +52,39 @@
 <h2 is-upgraded>作成完了</h2>
 <p>下の画面のようにプロジェクトの作成が完了したら[続行]を押してください。</p>
 <p class="image-container"><img src="img\c04f0d7884160ca2.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Webアプリの追加" duration="5">
+        <p>Webアプリケーションを追加します。 プロジェクトのホーム画面からWebのロゴをクリックしてください。</p>
+<p class="image-container"><img src="img\8b836994efd059fd.png"></p>
+<p>名前を指定して、[このアプリのFirebase Hostingも設定します。]にチェックを入れます。</p>
+<p class="image-container"><img src="img\a608817c2e163d8a.png"></p>
+<p>FirebaseSDKを追加します。 表示されているスクリプトをコピーしてください。</p>
+<p class="image-container"><img src="img\e4bdb4973a233958.png"></p>
+<p>index.htmlのhead内の「Firebase追加部分」にペーストしてください。</p>
+<pre><code language="language-html" class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&#34;utf-8&#34;&gt;
+    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1&#34;&gt;
+    &lt;title&gt;Welcome to Firebase Hosting&lt;/title&gt;
+
+    &lt;!-- Firebase SDKの追加部分 開始 --&gt;
+    &lt;!-- The core Firebase JS SDK is always required and must be listed first --&gt;
+    &lt;script src=&#34;/__/firebase/7.23.0/firebase-app.js&#34;&gt;&lt;/script&gt;
+
+    &lt;!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries --&gt;
+
+    &lt;!-- Initialize Firebase --&gt;
+    &lt;script src=&#34;/__/firebase/init.js&#34;&gt;&lt;/script&gt;
+    &lt;!-- Firebase SDKの追加部分 終了 --&gt;
+
+    &lt;link rel=&#34;stylesheet&#34; href=&#34;./css/style.css&#34;&gt;
+  &lt;/head&gt;
+</code></pre>
 
 
       </google-codelab-step>
