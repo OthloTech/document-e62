@@ -33,7 +33,8 @@
 <p>Firebaseとは、Firebase Incが開発し、現在では買収先のGoogleが提供しているモバイル・Webアプリケーション開発プラットフォームです。</p>
 <h2 is-upgraded>今回学ぶ製品</h2>
 <p>Firebaseには18個以上の製品があります。 今回はその中から3つ利用します。</p>
-<h2 is-upgraded>Firebase</h2>
+<h2 is-upgraded>Firebase Authentication</h2>
+<p>[]</p>
 <h2 is-upgraded>Firebase Hosting</h2>
 <p>Firebase Hostingは、作成したWebアプリケーションを簡単にホスティングできるサービスです。</p>
 <p><a href="https://firebase.google.com/products/hosting?hl=ja" target="_blank">Firebase Hosting - Firebase</a></p>
@@ -44,7 +45,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="新規プロジェクトの作成" duration="10">
+      <google-codelab-step label="新規プロジェクトの作成（GUIの場合）" duration="10">
         <p>それでは、最初に新規のプロジェクトを作成します。 まずは下記ボタンからコンソールを開いてください。</p>
 <p><a href="https://console.firebase.google.com/" target="_blank"><paper-button class="colored" raised>Firebaseコンソールへ移動</paper-button></a></p>
 <p>以下の画面が表示されたかと思いますので、<strong>[プロジェクトの作成]</strong>をクリックしてください。</p>
@@ -63,7 +64,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Webアプリの追加" duration="5">
+      <google-codelab-step label="Webアプリの追加（GUIの場合）" duration="5">
         <p>Webアプリケーションを追加します。 プロジェクトのホーム画面からWebのロゴをクリックしてください。</p>
 <p class="image-container"><img src="img\8b836994efd059fd.png"></p>
 <p>名前を指定して、[このアプリのFirebase Hostingも設定します。]にチェックを入れます。</p>
@@ -146,27 +147,170 @@
   Add Firebase to an existing Google Cloud Platform project
   Don&#39;t set up a default project
 </code></pre>
-<p>先程作成したプロジェクトを選択してください。</p>
-<pre>? Select a default Firebase project for this directory:
-&gt; fir-hands-on-xxx (firebase-hands-on)
-</pre>
-<p>後は以下のように答えてください。</p>
-<pre>? What do you want to use as your public directory? public
-? Configure as a single-page app (rewrite all urls to /index.html)? No
-+  Wrote public/404.html
+<p>プロジェクトのIDを指定してください。 但し、IDは必ず全体で一意のIDである必要があるため、ありふれた名前はお勧めしません。</p>
+<pre><code>? Please select an option: Create a new project
+i  If you want to create a project in a Google Cloud organization or folder, please use &#34;firebase projects:create&#34; instead, and return to this command when you&#39;ve created the project.
+? Please specify a unique project id (warning: cannot be modified afterward) [6-30 characters]:
+ () ここにプロジェクトのIDを指定
+</code></pre>
+<p>作成するプロジェクトの名前を指定してください。</p>
+<pre><code>? What would you like to call your project? (defaults to your project ID)
+</code></pre>
+<p>ここはエンターキーを押せば先程指定したIDが指定されます。 コンソールでの表示名に使用されたりするので、分かり易い名前を付けてみてはどうでしょうか？</p>
+<p>あとはほとんどEnterで大丈夫です。</p>
+<p>データベースのルールを記載するファイルの名前を聞いてます。 デフォルトで大丈夫なのでEnter</p>
+<pre><code>? What file should be used for Database Rules? (database.rules.json)
+</code></pre>
+<p>公開するディレクトリを聞いています。 今回こちらで用意したプロジェクトではpublicディレクトリが公開するディレクトリであるため、デフォルトのままでエンターキーを押してください。</p>
+<pre><code>What do you want to use as your public directory? (public)
+</code></pre>
+<p>Noで大丈夫です。</p>
+<pre><code>? Configure as a single-page app (rewrite all urls to /index.html)? (y/N) 
+? File public/404.html already exists. Overwrite? No
 ? File public/index.html already exists. Overwrite? No
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Databaseの設定" duration="5">
+        <p>さて、これで大体の準備が整ったので、早速色々と開発していきたいのですが、その前に更に一つ。 今回利用予定の製品の1つ、RealTimeDatabaseのルールを定義している「database.rules.json」の編集を行います。</p>
+<pre><code language="language-json" class="language-json">{
+  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+  &#34;rules&#34;: {
+    &#34;.read&#34;: false,
+    &#34;.write&#34;: false
+  }
+}
+</code></pre>
+<p>初期状態ではこのようになっているかと思います。 これを、以下のように書き換えてください。</p>
+<pre><code language="language-json" class="language-json">{
+  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+  &#34;rules&#34;: {
+    &#34;.read&#34;: true,
+    &#34;.write&#34;: true
+  }
+}
+</code></pre>
+<p>ここで何を変更したのかというと、</p>
+<ul>
+<li>データベースの読み取りがfalse（誰でも読み取り不可）をtrue（誰でも読み取り可）</li>
+<li>データベースの書き込みがfalse（誰でも書き込み不可）をtrue（誰でも書き込み可） という風に変更しました。これは誰でも読み書きができるという点では安全性に問題があります。</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="サーバとデプロイ" duration="5">
+        <p>今回利用するFirebaseHostingには開発したアプリケーションを簡単にデプロイできるコマンドが用意されています。</p>
+<pre>$ firebase deploy
 </pre>
+<p>コマンド実行後、デプロイが完了すると以下のようにURLがコンソールに表示されます。</p>
+<pre><code>Hosting URL: https://xxxxxxxxxxx.web.app
+</code></pre>
+<p>xx～の部分には最初に指定したプロジェクトのIDが入っており、このページにアクセスすると実際に開発したものが確認できます。</p>
+<p>しかし、毎回デプロイせずともローカルでもしっかりと確認したいですよね？ その場合は以下のコマンドでローカルでも確認できます。</p>
+<pre>$ firebase serve
+</pre>
+<p>今回のハンズオンでは基本的にローカルでの確認を行いながら進めていきます。</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Databaseの設定" duration="0">
-        
+      <google-codelab-step label="Authenticationの設定" duration="5">
+        <p>Authentication（認証機能）の設定を行います。 今回はGoogleアカウントによる認証のみに対応させます。</p>
+<p>右側のナビゲーションから<strong>Authentication</strong>を選択し、<strong>Sign-in method</strong>のタブを開いてください。</p>
+<p class="image-container"><img src="img\dcc88048f8867d5e.png"></p>
+<p>認証方法の一覧が表示されますので、Googleをクリックして下さい。</p>
+<p class="image-container"><img src="img\6583e6150859bf3f.png"></p>
+<p>表示されたら、</p>
+<ol type="1">
+<li><strong>有効にする</strong>をONに</li>
+<li><strong>プロジェクトのサポートメール</strong>を選択</li>
+<li><strong>保存</strong>を押してください。</li>
+</ol>
+<p class="image-container"><img src="img\4bfab42369f0350f.png"></p>
+<p>以上で Authentication の設定は完了です。</p>
+
 
       </google-codelab-step>
     
-      <google-codelab-step label="プロジェクト" duration="5">
-        
+      <google-codelab-step label="Firebaseのスクリプトの読み込み" duration="2">
+        <p>Firebase用のSDKを追加します。 <code>public/index.html</code>を開き、以下のように<code>&lt;!-- FirebaseのSDK</code>追加部分 --&gt;の部分にSDKを追加してください。</p>
+<pre><code language="language-html" class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset=&#34;utf-8&#34;&gt;
+  &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1&#34;&gt;
+  &lt;title&gt;ChatApp&lt;/title&gt;
+
+  &lt;!-- FirebaseのSDK追加部分 開始 --&gt;
+  &lt;script defer src=&#34;/__/firebase/7.23.0/firebase-app.js&#34;&gt;&lt;/script&gt;
+  &lt;script defer src=&#34;/__/firebase/7.23.0/firebase-auth.js&#34;&gt;&lt;/script&gt;
+  &lt;script defer src=&#34;/__/firebase/7.23.0/firebase-database.js&#34;&gt;&lt;/script&gt;
+  &lt;script defer src=&#34;/__/firebase/init.js&#34;&gt;&lt;/script&gt;
+  &lt;!-- FirebaseのSDK追加部分 終了 --&gt;
+
+  &lt;link rel=&#34;stylesheet&#34; href=&#34;./css/style.css&#34;&gt;
+  &lt;link href=&#34;https://fonts.googleapis.com/css2?family=Noto+Sans+JP&amp;display=swap&#34; rel=&#34;stylesheet&#34;&gt;
+&lt;/head&gt;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="認証処理の作成" duration="10">
+        <p>それでは、認証処理を実装していきます。</p>
+<h2 is-upgraded>認証処理の作成</h2>
+<p><code>public/js/index.js</code>へ以下のコードを追加します。</p>
+<pre><code language="language-javascript" class="language-javascript">// 認証処理作成箇所
+function auth() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  // Google認証のポップアップ表示
+  firebase
+    .auth()
+    .signInWithPopup(provider)
+    .then((result) =&gt; {
+      // 認証成功
+      const user = result.user;
+      enableMessages(user);
+    })
+    .catch(function (error) {
+      // 認証失敗
+      alert(&#34;アカウント連携に失敗しました&#34;);
+      console.log({ error });
+    });
+}
+</code></pre>
+<p>ここでは、Google認証のポップアップを呼び出し認証を行った結果を受け取ります。</p>
+<ol type="1">
+<li>Googleプロバイダオブジェクトのインスタンスを作成 <code>javascript<br>const provider = new firebase.auth.GoogleAuthProvider();</code><br> 2. 認証処理 <code>javascript<br>firebase<br>.auth()<br>.signInWithPopup(provider)<br>.then((result) =&gt; {<br>  // 認証成功<br>  const user = result.user;<br>  enableMessages(user);<br>})<br>.catch(function (error) {<br>  // 認証失敗<br>  alert(&#34;アカウント連携に失敗しました&#34;);<br>  console.log({ error });<br>});<br></code></li>
+<li>成功した場合、認証結果（ユーザ情報）を受け取る <code>javascript<br>.then((result) =&gt; {<br>  // 認証成功<br>  const user = result.user;<br>  enableMe</code>ssages(user);<br>})<br> 4. 失敗した場合、エラーをアラートにて表示 <code>javascript<br>.catch(function (error) {<br>  // 認証失敗<br>  alert(&#34;アカウント連携に失敗しました&#34;);<br>  console.log({ error });<br>});<br></code></li>
+</ol>
+<h2 is-upgraded>ページを開いた際に認証を呼び出す</h2>
+<p>作成した認証処理をページのロード時に呼び出すようにします。 以下のコードを追記してください。</p>
+<pre><code language="language-javascript" class="language-javascript">// 認証の呼び出し箇所
+document.addEventListener(&#34;DOMContentLoaded&#34;, () =&gt; {
+  // DOMのリロードが終わったタイミングで認証開始
+  auth();
+});
+</code></pre>
+<p>このコードにより、ページを読み込むたびに認証を行うようになりました。</p>
+<h2 is-upgraded>テスト</h2>
+<p>それでは、ローカルで動作チェックしてみましょう。 以下のコマンドを実行してローカルでアプリを起動してください。</p>
+<pre><code>$ firebase serve
+</code></pre>
+<p>続いて、localhost:5000にアクセスしてください。</p>
+<p><a href="http://localhost:5000" target="_blank"><paper-button class="colored" raised>ローカルでテスト</paper-button></a></p>
+<p>すると、早速ポップアップがブロックされてしまい認証が失敗してしまいます。</p>
+<p class="image-container"><img src="img\99cfc0df85d799a5.png"></p>
+<p>リンクバーにあるポップアップブロックのアイコンをクリックし、<strong>http://localhost:5000 のポップアップとリダイレクトを常に許可する</strong>にチェックを入れ、<strong>完了</strong>を押してください。</p>
+<p class="image-container"><img src="img\41e3fa641e8c9d8b.png"></p>
+<p>すると、画像のようにアカウント一覧が表示されるかと思います。</p>
+<p class="image-container"><img src="img\c5cd784282d14f8a.png"></p>
+<p>自身のアカウントを選択し、ログインしてください。 以下のようにポップアップが表示されればログイン成功です！</p>
+<p class="image-container"><img src="img\a513ec637760ac30.png"></p>
+
 
       </google-codelab-step>
     

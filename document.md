@@ -22,7 +22,10 @@ Firebaseとは、Firebase Incが開発し、現在では買収先のGoogleが提
 Firebaseには18個以上の製品があります。
 今回はその中から3つ利用します。
 
-### Firebase 
+### Firebase Authentication
+
+
+[]
 
 ### Firebase Hosting
 
@@ -37,7 +40,7 @@ Realtime Databaseはリアルタイムでデータを共有/同期できるNoSQL
 [Firebase Realtime Database - Firebase](https://firebase.google.com/products/realtime-database?hl=ja)
 [NoSQLについて勉強する。 - Qiita](https://qiita.com/t_nakayama0714/items/0ff7644666f0122cfba1)
 
-## 新規プロジェクトの作成
+## 新規プロジェクトの作成（GUIの場合）
 Duration: 0:10:00
 
 それでは、最初に新規のプロジェクトを作成します。
@@ -71,7 +74,7 @@ Duration: 0:10:00
 
 ![](./img/new_project5.png)
 
-## Webアプリの追加
+## Webアプリの追加（GUIの場合）
 Duration: 0:05:00
 
 Webアプリケーションを追加します。
@@ -193,24 +196,270 @@ $ firebase init
   Don't set up a default project
 ```
 
-先程作成したプロジェクトを選択してください。
+プロジェクトのIDを指定してください。
+但し、IDは必ず全体で一意のIDである必要があるため、ありふれた名前はお勧めしません。
 
-```console
-? Select a default Firebase project for this directory:
-> fir-hands-on-xxx (firebase-hands-on)
+```
+? Please select an option: Create a new project
+i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project.
+? Please specify a unique project id (warning: cannot be modified afterward) [6-30 characters]:
+ () ここにプロジェクトのIDを指定
 ```
 
-後は以下のように答えてください。
+作成するプロジェクトの名前を指定してください。
+```
+? What would you like to call your project? (defaults to your project ID)
+```
+ここはエンターキーを押せば先程指定したIDが指定されます。
+コンソールでの表示名に使用されたりするので、分かり易い名前を付けてみてはどうでしょうか？
 
-```console
-? What do you want to use as your public directory? public
-? Configure as a single-page app (rewrite all urls to /index.html)? No
-+  Wrote public/404.html
+
+あとはほとんどEnterで大丈夫です。
+
+データベースのルールを記載するファイルの名前を聞いてます。
+デフォルトで大丈夫なのでEnter
+```
+? What file should be used for Database Rules? (database.rules.json)
+```
+
+公開するディレクトリを聞いています。
+今回こちらで用意したプロジェクトではpublicディレクトリが公開するディレクトリであるため、デフォルトのままでエンターキーを押してください。
+
+```
+What do you want to use as your public directory? (public)
+```
+
+Noで大丈夫です。
+
+```
+? Configure as a single-page app (rewrite all urls to /index.html)? (y/N) 
+? File public/404.html already exists. Overwrite? No
 ? File public/index.html already exists. Overwrite? No
 ```
 
 ## Databaseの設定
-
-
-## プロジェクト
 Duration: 0:05:00
+
+さて、これで大体の準備が整ったので、早速色々と開発していきたいのですが、その前に更に一つ。
+今回利用予定の製品の1つ、RealTimeDatabaseのルールを定義している「database.rules.json」の編集を行います。
+
+```json
+{
+  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+  "rules": {
+    ".read": false,
+    ".write": false
+  }
+}
+```
+
+初期状態ではこのようになっているかと思います。
+これを、以下のように書き換えてください。
+
+```json
+{
+  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+```
+
+ここで何を変更したのかというと、
+- データベースの読み取りがfalse（誰でも読み取り不可）をtrue（誰でも読み取り可）
+- データベースの書き込みがfalse（誰でも書き込み不可）をtrue（誰でも書き込み可）
+という風に変更しました。これは誰でも読み書きができるという点では安全性に問題があります。
+
+
+## サーバとデプロイ
+Duration: 0:05:00
+
+今回利用するFirebaseHostingには開発したアプリケーションを簡単にデプロイできるコマンドが用意されています。
+
+```console
+$ firebase deploy
+```
+
+コマンド実行後、デプロイが完了すると以下のようにURLがコンソールに表示されます。
+
+```
+Hosting URL: https://xxxxxxxxxxx.web.app
+```
+
+xx～の部分には最初に指定したプロジェクトのIDが入っており、このページにアクセスすると実際に開発したものが確認できます。
+
+しかし、毎回デプロイせずともローカルでもしっかりと確認したいですよね？
+その場合は以下のコマンドでローカルでも確認できます。
+
+```console
+$ firebase serve
+```
+
+今回のハンズオンでは基本的にローカルでの確認を行いながら進めていきます。
+
+## Authenticationの設定
+Duration: 0:05:00
+
+Authentication（認証機能）の設定を行います。
+今回はGoogleアカウントによる認証のみに対応させます。
+
+右側のナビゲーションから**Authentication**を選択し、**Sign-in method**のタブを開いてください。
+
+![](./img/auth1.png)
+
+認証方法の一覧が表示されますので、Googleをクリックして下さい。
+
+![](./img/auth2.png)
+
+表示されたら、
+1. **有効にする**をONに
+2. **プロジェクトのサポートメール**を選択
+3. **保存**を押してください。
+
+![](./img/auth3.png)
+
+以上で Authentication の設定は完了です。
+
+## Firebaseのスクリプトの読み込み
+Duration: 0:02:00
+
+Firebase用のSDKを追加します。
+`public/index.html`を開き、以下のように`<!-- FirebaseのSDK追加部分 -->`の部分にSDKを追加してください。
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChatApp</title>
+
+  <!-- FirebaseのSDK追加部分 開始 -->
+  <script defer src="/__/firebase/7.23.0/firebase-app.js"></script>
+  <script defer src="/__/firebase/7.23.0/firebase-auth.js"></script>
+  <script defer src="/__/firebase/7.23.0/firebase-database.js"></script>
+  <script defer src="/__/firebase/init.js"></script>
+  <!-- FirebaseのSDK追加部分 終了 -->
+
+  <link rel="stylesheet" href="./css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+</head>
+```
+
+## 認証処理の作成
+Duration: 0:10:00
+
+それでは、認証処理を実装していきます。
+
+### 認証処理の作成
+
+`public/js/index.js`へ以下のコードを追加します。
+
+```javascript
+// 認証処理作成箇所
+function auth() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  // Google認証のポップアップ表示
+  firebase
+    .auth()
+    .signInWithPopup(provider)
+    .then((result) => {
+      // 認証成功
+      const user = result.user;
+      enableMessages(user);
+    })
+    .catch(function (error) {
+      // 認証失敗
+      alert("アカウント連携に失敗しました");
+      console.log({ error });
+    });
+}
+```
+
+ここでは、Google認証のポップアップを呼び出し認証を行った結果を受け取ります。
+
+1. Googleプロバイダオブジェクトのインスタンスを作成
+```javascript
+  const provider = new firebase.auth.GoogleAuthProvider();
+```
+2. 認証処理
+```javascript
+firebase
+    .auth()
+    .signInWithPopup(provider)
+    .then((result) => {
+      // 認証成功
+      const user = result.user;
+      enableMessages(user);
+    })
+    .catch(function (error) {
+      // 認証失敗
+      alert("アカウント連携に失敗しました");
+      console.log({ error });
+    });
+```
+3. 成功した場合、認証結果（ユーザ情報）を受け取る
+```javascript
+    .then((result) => {
+      // 認証成功
+      const user = result.user;
+      enableMessages(user);
+    })
+```
+4. 失敗した場合、エラーをアラートにて表示
+```javascript
+    .catch(function (error) {
+      // 認証失敗
+      alert("アカウント連携に失敗しました");
+      console.log({ error });
+    });
+```
+
+### ページを開いた際に認証を呼び出す
+
+作成した認証処理をページのロード時に呼び出すようにします。
+以下のコードを追記してください。
+
+```javascript
+// 認証の呼び出し箇所
+document.addEventListener("DOMContentLoaded", () => {
+  // DOMのリロードが終わったタイミングで認証開始
+  auth();
+});
+```
+
+このコードにより、ページを読み込むたびに認証を行うようになりました。
+
+### テスト
+
+それでは、ローカルで動作チェックしてみましょう。
+以下のコマンドを実行してローカルでアプリを起動してください。
+
+```
+$ firebase serve
+```
+
+続いて、localhost:5000にアクセスしてください。
+
+<button>
+  [ローカルでテスト](http://localhost:5000)
+</button>
+
+すると、早速ポップアップがブロックされてしまい認証が失敗してしまいます。
+
+![](./img/auth4.png)
+
+リンクバーにあるポップアップブロックのアイコンをクリックし、**http://localhost:5000 のポップアップとリダイレクトを常に許可する**にチェックを入れ、**完了**を押してください。
+
+![](./img/auth5.png)
+
+すると、画像のようにアカウント一覧が表示されるかと思います。
+
+![](./img/auth6.png)
+
+自身のアカウントを選択し、ログインしてください。
+以下のようにポップアップが表示されればログイン成功です！
+
+![](./img/auth7.png)
+
