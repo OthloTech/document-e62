@@ -145,15 +145,15 @@ git clone git@github.com:OthloTech/firebase-hands-on.git
 
 まずは、以下のサイトにアクセスしてください。
 
-[OthloTech/firebase-hands-on - GitHub](https://github.com/OthloTech/firebase-hands-on)
+[OthloTech/firebase-hands-on - GitHub](git@github.com:OthloTech/firebase-hands-on.git)
 
 続いて、緑色のcodeボタンを押して、「Download ZIP」を押してZIPファイルをダウンロードしてください。
 
-![](./img/web5.png)
+![](./img/git1.png)
 
 ダウンロードした zipファイルを開き、中のプロジェクトを任意のディレクトリにペーストしてください。
 
-## Firebase CLIでの初期化
+## 新規プロジェクトの作成（FirebaseCLIの場合）
 Duration: 0:08:00
 
 事前準備の際にインストールしていただいたFirebase CLIを利用していきます。
@@ -322,7 +322,7 @@ Authentication（認証機能）の設定を行います。
 
 以上で Authentication の設定は完了です。
 
-## Firebaseのスクリプトの読み込み
+## FirebaseのSDKの読み込み
 Duration: 0:02:00
 
 Firebase用のSDKを追加します。
@@ -369,8 +369,8 @@ function auth() {
     .signInWithPopup(provider)
     .then((result) => {
       // 認証成功
-      const user = result.user;
-      enableMessages(user);
+      alert("アカウント連携に成功しました");
+      console.log(result);
     })
     .catch(function (error) {
       // 認証失敗
@@ -396,8 +396,8 @@ firebase
     .signInWithPopup(provider)
     .then((result) => {
       // 認証成功
-      const user = result.user;
-      enableMessages(user);
+      alert("アカウント連携に成功しました");
+      console.log(result);
     })
     .catch(function (error) {
       // 認証失敗
@@ -407,11 +407,12 @@ firebase
 ```
 
 3. 成功した場合、認証結果（ユーザ情報）を受け取る
+
 ```javascript
     .then((result) => {
       // 認証成功
-      const user = result.user;
-      enableMessages(user);
+      alert("アカウント連携に成功しました");
+      console.log(result);
     })
 ```
 
@@ -526,7 +527,7 @@ function auth() {
 }
 ```
 
-`//新規コード追加部分`と書いてある部分を元々の内容を削除し、2行を追加してください。
+`// 新規コード追加部分`と書いてある部分を元々の内容を削除し、2行を追加してください。
 追加が完了後、再度 localhost:5000 へアクセスしログインしてみてください。
 
 ログインが完了したら、Firebaseのコンソールへアクセスし、**Realtime Database** を開いてください。
@@ -878,6 +879,12 @@ function enableMessages(user) {
 ![](./img/message2.png)
 
 別のタブで新しく開いて、別のアカウントでログインするか、デプロイして他の人に共有することで他のアカウントともチャットできます。
+
+▼デプロイコマンド
+
+```console
+$ firebase deploy
+```
 
 ## まとめ
 Duration 00:05:00

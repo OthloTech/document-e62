@@ -111,15 +111,15 @@
 </pre>
 <h2 is-upgraded>GitHubを利用されていない方</h2>
 <p>まずは、以下のサイトにアクセスしてください。</p>
-<p><a href="https://github.com/OthloTech/firebase-hands-on" target="_blank">OthloTech/firebase-hands-on - GitHub</a></p>
+<p><a href="git@github.com:OthloTech/firebase-hands-on.git" target="_blank">OthloTech/firebase-hands-on - GitHub</a></p>
 <p>続いて、緑色のcodeボタンを押して、「Download ZIP」を押してZIPファイルをダウンロードしてください。</p>
-<p class="image-container"><img src="img\f5820f11eac6849d.png"></p>
+<p class="image-container"><img src="img\87196144ff66680f.png"></p>
 <p>ダウンロードした zipファイルを開き、中のプロジェクトを任意のディレクトリにペーストしてください。</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Firebase CLIでの初期化" duration="8">
+      <google-codelab-step label="新規プロジェクトの作成（FirebaseCLIの場合）" duration="8">
         <p>事前準備の際にインストールしていただいたFirebase CLIを利用していきます。 まずは先程プロジェクトをクローン/ペーストしたディレクトリに移動し、初期化を行います。</p>
 <pre>$ firebase init
 </pre>
@@ -236,7 +236,7 @@ i  If you want to create a project in a Google Cloud organization or folder, ple
 
       </google-codelab-step>
     
-      <google-codelab-step label="Firebaseのスクリプトの読み込み" duration="2">
+      <google-codelab-step label="FirebaseのSDKの読み込み" duration="2">
         <p>Firebase用のSDKを追加します。 <code>public/index.html</code> を開き、以下のように <code>&lt;!-- FirebaseのSDK</code>追加部分 --&gt; の部分にSDKを追加してください。</p>
 <pre><code language="language-html" class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
@@ -274,8 +274,8 @@ function auth() {
     .signInWithPopup(provider)
     .then((result) =&gt; {
       // 認証成功
-      const user = result.user;
-      enableMessages(user);
+      alert(&#34;アカウント連携に成功しました&#34;);
+      console.log(result);
     })
     .catch(function (error) {
       // 認証失敗
@@ -298,8 +298,8 @@ function auth() {
     .signInWithPopup(provider)
     .then((result) =&gt; {
       // 認証成功
-      const user = result.user;
-      enableMessages(user);
+      alert(&#34;アカウント連携に成功しました&#34;);
+      console.log(result);
     })
     .catch(function (error) {
       // 認証失敗
@@ -308,8 +308,23 @@ function auth() {
     });
 </code></pre>
 <ol type="1">
-<li>成功した場合、認証結果（ユーザ情報）を受け取る <code>javascript<br>.then((result) =&gt; {<br>  // 認証成功<br>  const user = result.user;<br>  enableMe</code>ssages(user);<br>})<br> 4. 失敗した場合、エラーをアラートにて表示 <code>javascript<br>.catch(function (error) {<br>  // 認証失敗<br>  alert(&#34;アカウント連携に失敗しました&#34;);<br>  console.log({ error });<br>});<br></code></li>
+<li>成功した場合、認証結果（ユーザ情報）を受け取る</li>
 </ol>
+<pre><code language="language-javascript" class="language-javascript">    .then((result) =&gt; {
+      // 認証成功
+      alert(&#34;アカウント連携に成功しました&#34;);
+      console.log(result);
+    })
+</code></pre>
+<ol type="1">
+<li>失敗した場合、エラーをアラートにて表示</li>
+</ol>
+<pre><code language="language-javascript" class="language-javascript">    .catch(function (error) {
+      // 認証失敗
+      alert(&#34;アカウント連携に失敗しました&#34;);
+      console.log({ error });
+    });
+</code></pre>
 <h2 is-upgraded>ページを開いた際に認証を呼び出す</h2>
 <p>作成した認証処理をページのロード時に呼び出すようにします。 以下のコードを追記してください。</p>
 <pre><code language="language-javascript" class="language-javascript">// 認証の呼び出し箇所
@@ -375,7 +390,7 @@ function auth() {
       });
 }
 </code></pre>
-<p><code>//新</code>規コード追加部分と書いてある部分を元々の内容を削除し、2行を追加してください。 追加が完了後、再度 localhost:5000 へアクセスしログインしてみてください。</p>
+<p><code>// 新</code>規コード追加部分と書いてある部分を元々の内容を削除し、2行を追加してください。 追加が完了後、再度 localhost:5000 へアクセスしログインしてみてください。</p>
 <p>ログインが完了したら、Firebaseのコンソールへアクセスし、<strong>Realtime Database</strong> を開いてください。 以下のように usersドキュメントが追加されていればOKです。</p>
 <p class="image-container"><img src="img\ed2cc49f7b290888.png"></p>
 <h2 is-upgraded>ユーザ一覧を表示</h2>
@@ -662,6 +677,9 @@ function enableMessages(user) {
 <p>それでは、実際にメッセージを送ってみます。</p>
 <p class="image-container"><img src="img\61abc8178a9b3eb8.png"></p>
 <p>別のタブで新しく開いて、別のアカウントでログインするか、デプロイして他の人に共有することで他のアカウントともチャットできます。</p>
+<p>▼デプロイコマンド</p>
+<pre>$ firebase deploy
+</pre>
 
 
       </google-codelab-step>
