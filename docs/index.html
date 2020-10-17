@@ -34,7 +34,8 @@
 <h2 is-upgraded>今回学ぶ製品</h2>
 <p>Firebaseには18個以上の製品があります。 今回はその中から3つ利用します。</p>
 <h2 is-upgraded>Firebase Authentication</h2>
-<p>[]</p>
+<p>Firebase Authenticationは、SNSなどの会員情報を用いた認証をアプリケーションに導入できます。</p>
+<p><a href="https://firebase.google.com/docs/auth?hl=ja" target="_blank">Firebase Authentication - Firebase</a></p>
 <h2 is-upgraded>Firebase Hosting</h2>
 <p>Firebase Hostingは、作成したWebアプリケーションを簡単にホスティングできるサービスです。</p>
 <p><a href="https://firebase.google.com/products/hosting?hl=ja" target="_blank">Firebase Hosting - Firebase</a></p>
@@ -219,7 +220,7 @@ i  If you want to create a project in a Google Cloud organization or folder, ple
     
       <google-codelab-step label="Authenticationの設定" duration="5">
         <p>Authentication（認証機能）の設定を行います。 今回はGoogleアカウントによる認証のみに対応させます。</p>
-<p>右側のナビゲーションから<strong>Authentication</strong>を選択し、<strong>Sign-in method</strong>のタブを開いてください。</p>
+<p>左側のナビゲーションから<strong>Authentication</strong>を選択し、<strong>Sign-in method</strong>のタブを開いてください。</p>
 <p class="image-container"><img src="img\dcc88048f8867d5e.png"></p>
 <p>認証方法の一覧が表示されますので、Googleをクリックして下さい。</p>
 <p class="image-container"><img src="img\6583e6150859bf3f.png"></p>
@@ -236,7 +237,7 @@ i  If you want to create a project in a Google Cloud organization or folder, ple
       </google-codelab-step>
     
       <google-codelab-step label="Firebaseのスクリプトの読み込み" duration="2">
-        <p>Firebase用のSDKを追加します。 <code>public/index.html</code>を開き、以下のように<code>&lt;!-- FirebaseのSDK</code>追加部分 --&gt;の部分にSDKを追加してください。</p>
+        <p>Firebase用のSDKを追加します。 <code>public/index.html</code> を開き、以下のように <code>&lt;!-- FirebaseのSDK</code>追加部分 --&gt; の部分にSDKを追加してください。</p>
 <pre><code language="language-html" class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -255,6 +256,7 @@ i  If you want to create a project in a Google Cloud organization or folder, ple
   &lt;link href=&#34;https://fonts.googleapis.com/css2?family=Noto+Sans+JP&amp;display=swap&#34; rel=&#34;stylesheet&#34;&gt;
 &lt;/head&gt;
 </code></pre>
+<p><code>/__/firebase/firebase-app.js</code> と <code>/__/firebase/init.js</code> は必ず必要ですが、<code>/__/firebase/7.23.0/firebase-auth.js</code> や <code>/__/firebase/7.23.0/firebase-database.js</code> は利用するプロダクトを追加していますので、プロジェクトによって呼び出す製品は変わってきます。</p>
 
 
       </google-codelab-step>
@@ -262,7 +264,7 @@ i  If you want to create a project in a Google Cloud organization or folder, ple
       <google-codelab-step label="認証処理の作成" duration="10">
         <p>それでは、認証処理を実装していきます。</p>
 <h2 is-upgraded>認証処理の作成</h2>
-<p><code>public/js/index.js</code>へ以下のコードを追加します。</p>
+<p><code>public/js/index.js</code> へ以下のコードを追加します。</p>
 <pre><code language="language-javascript" class="language-javascript">// 認証処理作成箇所
 function auth() {
   const provider = new firebase.auth.GoogleAuthProvider();
@@ -284,7 +286,28 @@ function auth() {
 </code></pre>
 <p>ここでは、Google認証のポップアップを呼び出し認証を行った結果を受け取ります。</p>
 <ol type="1">
-<li>Googleプロバイダオブジェクトのインスタンスを作成 <code>javascript<br>const provider = new firebase.auth.GoogleAuthProvider();</code><br> 2. 認証処理 <code>javascript<br>firebase<br>.auth()<br>.signInWithPopup(provider)<br>.then((result) =&gt; {<br>  // 認証成功<br>  const user = result.user;<br>  enableMessages(user);<br>})<br>.catch(function (error) {<br>  // 認証失敗<br>  alert(&#34;アカウント連携に失敗しました&#34;);<br>  console.log({ error });<br>});<br></code></li>
+<li>Googleプロバイダオブジェクトのインスタンスを作成</li>
+</ol>
+<pre><code language="language-javascript" class="language-javascript">  const provider = new firebase.auth.GoogleAuthProvider();
+</code></pre>
+<ol type="1">
+<li>認証処理</li>
+</ol>
+<pre><code language="language-javascript" class="language-javascript">firebase
+    .auth()
+    .signInWithPopup(provider)
+    .then((result) =&gt; {
+      // 認証成功
+      const user = result.user;
+      enableMessages(user);
+    })
+    .catch(function (error) {
+      // 認証失敗
+      alert(&#34;アカウント連携に失敗しました&#34;);
+      console.log({ error });
+    });
+</code></pre>
+<ol type="1">
 <li>成功した場合、認証結果（ユーザ情報）を受け取る <code>javascript<br>.then((result) =&gt; {<br>  // 認証成功<br>  const user = result.user;<br>  enableMe</code>ssages(user);<br>})<br> 4. 失敗した場合、エラーをアラートにて表示 <code>javascript<br>.catch(function (error) {<br>  // 認証失敗<br>  alert(&#34;アカウント連携に失敗しました&#34;);<br>  console.log({ error });<br>});<br></code></li>
 </ol>
 <h2 is-upgraded>ページを開いた際に認証を呼び出す</h2>
@@ -310,6 +333,370 @@ document.addEventListener(&#34;DOMContentLoaded&#34;, () =&gt; {
 <p class="image-container"><img src="img\c5cd784282d14f8a.png"></p>
 <p>自身のアカウントを選択し、ログインしてください。 以下のようにポップアップが表示されればログイン成功です！</p>
 <p class="image-container"><img src="img\a513ec637760ac30.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="ユーザ一覧の作成" duration="0">
+        <p>Duration 00:10:00</p>
+<p>左側にユーザ一覧を作成します。</p>
+<p class="image-container"><img src="img\77b133da0c378f16.png"></p>
+<h2 is-upgraded>ユーザ情報の登録処理</h2>
+<p>まずは、ユーザ情報をデータベースに更新します。 先程作成した認証処理はAuthentication側がユーザ情報を持っていますので、現状ではデータベース内は空です。 そのため、ユーザ登録された内容をデータベースへ格納する処理を追加します。</p>
+<pre><code language="language-javascript" class="language-javascript">// ----- ユーザ情報登録/更新処理 ----- //
+function updateUserinfo(user) {
+    const userDb = firebase.database().ref(&#34;users/&#34; + user.uid);
+
+    userDb.set({
+        uid: user.uid,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+    });
+}
+</code></pre>
+<p>ここでは、 <code>set()</code> メソッドを用いて、値をデータベースへ格納しています。 セットした値は users/XXXXXX(ユーザID) に格納されます。 もし既に同じユーザIDが格納されている場合は上書されます。</p>
+<p>また、先程追加したコードも一部修正します。</p>
+<pre><code language="language-javascript" class="language-javascript">// ----- 認証処理作成箇所 ----- //
+function auth() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  // Google認証のポップアップ表示
+  firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then((result) =&gt; {
+        // 新規コード追加部分
+        console.log({ result });
+        updateUserinfo(result.user);
+      })
+      .catch(function (error) {
+        // 認証失敗
+        alert(&#34;アカウント連携に失敗しました&#34;);
+        console.log({ error });
+      });
+}
+</code></pre>
+<p><code>//新</code>規コード追加部分と書いてある部分を元々の内容を削除し、2行を追加してください。 追加が完了後、再度 localhost:5000 へアクセスしログインしてみてください。</p>
+<p>ログインが完了したら、Firebaseのコンソールへアクセスし、<strong>Realtime Database</strong> を開いてください。 以下のように usersドキュメントが追加されていればOKです。</p>
+<p class="image-container"><img src="img\ed2cc49f7b290888.png"></p>
+<h2 is-upgraded>ユーザ一覧を表示</h2>
+<p>RealTimeDatabase へ保存したユーザ情報を表示します。 以下のコードを追加してください。</p>
+<pre><code language="language-javascript" class="language-javascript">// ----- ユーザ一覧表示処理 ----- //
+function renderUserslist(user) {
+    const usersElm = document.querySelector(&#34;#users_list&#34;);
+
+    // コールバック関数
+    return (snapshot) =&gt; {
+        const newUsers = [];
+
+        // 自身を追加
+        newUsers.push(`
+          &lt;div class=&#34;users_list__box-me&#34;&gt;
+            &lt;div class=&#34;users_list__icon&#34;&gt;
+              &lt;img src=&#34;${escapeHTML(user.photoURL)}&#34; /&gt;
+            &lt;/div&gt;&lt;div class=&#34;users_list__status&#34;&gt;
+              &lt;p class=&#34;users_list__name&#34;&gt;${escapeHTML(user.displayName)}&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        `);
+
+        // ユーザ情報を一つずつ取得し、表示用HTMLを組み立て
+        snapshot.forEach((send_user) =&gt; {
+            // 自分以外のユーザのみ追加
+            if (user.uid !== send_user.val().uid) {
+                newUsers.push(`
+          &lt;div class=&#34;users_list__box&#34;&gt;
+            &lt;div class=&#34;users_list__icon&#34;&gt;
+              &lt;img src=&#34;${escapeHTML(send_user.val().photoURL)}&#34; /&gt;
+            &lt;/div&gt;&lt;div class=&#34;users_list__status&#34;&gt;
+              &lt;p class=&#34;users_list__name&#34;&gt;${escapeHTML(send_user.val().displayName)}&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        `);
+            }
+        });
+        // ユーザ一覧表示エリアに描画
+        usersElm.innerHTML = `
+      &lt;div&gt;
+        ${newUsers.join(&#34;&#34;)}
+      &lt;/div&gt;
+    `;
+        // スクロール最下部へ移動
+        usersElm.scrollTop = usersElm.scrollHeight;
+    }
+}
+</code></pre>
+<p>少しコードが長くなってしまいましたが、要はユーザ情報を取得し、HTMLと結合させて描画しています。 自身の情報は必ず一番上に来るようにするため、一番最初に格納しています。 全ユーザ情報を描画する際には自身の情報は飛ばす用に if文を用いて分岐しています。</p>
+<p>続いて、ユーザ情報更新処理側にコードを追加します。</p>
+<pre><code language="language-javascript" class="language-javascript">// ----- ユーザ情報登録/更新処理 ----- //
+function updateUserinfo(user) {
+    const userDb = firebase.database().ref(&#34;users/&#34; + user.uid);
+
+    userDb.set({
+        uid: user.uid,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+    });
+
+    // 新規コード追加部分
+    const usersDb = firebase.database().ref(&#34;users&#34;);
+    usersDb.on(&#34;value&#34;, renderUserslist(user));
+}
+</code></pre>
+<p>末尾2行が新たに追加した部分です。 使用している <code>on()</code> メソッドによりデータベースの変更を監視することが出来ます。 そのため、新しくユーザが追加された場合もページをリロードすることなく追加されるようになります。</p>
+<h2 is-upgraded>実際に表示してみる</h2>
+<p>さて、再びログインしてみてください。 ログイン後、左側に自分のアイコンと名前が表示されていれば完了です。</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="メッセージの送信処理作成" duration="0">
+        <p>Duration 00:10:00</p>
+<p>続いてメッセージの送信処理を作成します。</p>
+<h2 is-upgraded>送信処理部分作成</h2>
+<p>以下のコードを追加してください。</p>
+<pre><code language="language-javascript" class="language-javascript">// ----- メッセージ送信処理箇所 ----- //
+function enableMessages(user) {
+    const messagesDb = firebase.database().ref(&#34;messages&#34;);
+
+    // メッセージ送信イベント登録
+    const messageTextInput = document.querySelector(&#34;#message-text&#34;);
+    const messageButton = document.querySelector(&#34;#message-submit-button&#34;);
+
+    // 送信ボタンが押された場合
+    messageButton.addEventListener(&#34;click&#34;, () =&gt; {
+        // DBへ新規メッセージの登録
+        messagesDb.push({
+            userId: user.uid,
+            date: new Date().getTime(), // タイムスタンプをセット (例：1602862031298)
+            text: messageTextInput.value,
+        });
+        // フォームの内容をリセット
+        messageTextInput.value = &#34;&#34;;
+    });
+}
+</code></pre>
+<p>ここでは、送信ボタンが押された際にテキストエリア内の文字列をデータベースへメッセージとして保存する処理を行っています。 <code>push()</code> メソッドを使うことでデータベース内の message 直下に</p>
+<ul>
+<li>ユーザID</li>
+<li>送信日時</li>
+<li>送信内容</li>
+</ul>
+<p>が格納されます。 尚、 <code>push()</code> メソッドを利用した場合のメッセージ毎のIDはユニークなIDをランダムに振り分けられます。</p>
+<h2 is-upgraded>呼び出し部分の追加</h2>
+<p>送信処理部分を作成しましたので、続いて送信処理を呼び出す部分を追記したいと思います。</p>
+<pre><code language="language-javascript" class="language-javascript">// ----- 認証処理作成箇所 ----- //
+function auth() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  // Google認証のポップアップ表示
+  firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then((result) =&gt; {
+        console.log({ result });
+        updateUserinfo(result.user);
+
+        // 新規コード追加部分
+        enableMessages(result.user);
+      })
+      .catch(function (error) {
+        // 認証失敗
+        alert(&#34;アカウント連携に失敗しました&#34;);
+        console.log({ error });
+      });
+}
+</code></pre>
+<p><code>// 新</code>規コード追加部分 の後ろの1行を追加してください。</p>
+<h2 is-upgraded>データベースへメッセージが格納されることを確認</h2>
+<p>ここまで完了したら、一度メッセージを送信してみてください。 送信しても何も表示されないかと思います。 しかし、データベースを再度開いてもらうと messages が新たに追加されており、内容が確認できるかと思います。</p>
+<p class="image-container"><img src="img\54ab95edbacac5a1.png"></p>
+<p>これで送信処理の完成です。</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="メッセージの表示処理" duration="0">
+        <p>Duration 00:10:00</p>
+<p>先程追加した送信処理で送信した内容、他のユーザから送信された内容を表示できるように処理を追加します。</p>
+<h2 is-upgraded>ユーザ一覧をグローバル変数で管理</h2>
+<p>メッセージには送信したユーザに関する情報が、ユニークなIDしかありません。 そのため、ユーザ名やアイコンを取得するにはユーザの情報が必要になります。 まずは、ユーザ情報を格納する変数を用意します。</p>
+<pre><code language="language-javascript" class="language-javascript">// ----- グローバル変数 ----- //
+let usersList = []; // ユーザ一覧
+</code></pre>
+<p>続いて、ユーザ一覧表示処理 に <code>// 新</code>規コード追加部分 の1行処理を追加します。</p>
+<pre><code language="language-javascript" class="language-javascript">// ----- ユーザ一覧表示処理 ----- //
+function renderUserslist(user) {
+    const usersElm = document.querySelector(&#34;#users_list&#34;);
+
+    // コールバック関数
+    return (snapshot) =&gt; {
+        const newUsers = [];
+
+        // 新規コード追加部分
+        usersList = snapshot.val();
+
+        // 自身を追加
+        newUsers.push(`
+          &lt;div class=&#34;users_list__box-me&#34;&gt;
+            &lt;div class=&#34;users_list__icon&#34;&gt;
+              &lt;img src=&#34;${escapeHTML(user.photoURL)}&#34; /&gt;
+            &lt;/div&gt;&lt;div class=&#34;users_list__status&#34;&gt;
+              &lt;p class=&#34;users_list__name&#34;&gt;${escapeHTML(user.displayName)}&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        `);
+
+        // ユーザ情報を一つずつ取得し、表示用HTMLを組み立て
+        snapshot.forEach((send_user) =&gt; {
+            // 自分以外のユーザのみ追加
+            if (user.uid !== send_user.val().uid) {
+                newUsers.push(`
+          &lt;div class=&#34;users_list__box&#34;&gt;
+            &lt;div class=&#34;users_list__icon&#34;&gt;
+              &lt;img src=&#34;${escapeHTML(send_user.val().photoURL)}&#34; /&gt;
+            &lt;/div&gt;&lt;div class=&#34;users_list__status&#34;&gt;
+              &lt;p class=&#34;users_list__name&#34;&gt;${escapeHTML(send_user.val().displayName)}&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        `);
+            }
+        });
+        // ユーザ一覧表示エリアに描画
+        usersElm.innerHTML = `
+      &lt;div&gt;
+        ${newUsers.join(&#34;&#34;)}
+      &lt;/div&gt;
+    `;
+        // スクロール最下部へ移動
+        usersElm.scrollTop = usersElm.scrollHeight;
+    }
+}
+</code></pre>
+<p>これで、ユーザ情報一覧の取得が可能になりました。</p>
+<h2 is-upgraded>表示処理部分の追加</h2>
+<p>以下のコードを追加してください。</p>
+<pre><code language="language-javascript" class="language-javascript">// ----- メッセージ表示処理箇所 ----- //
+function renderMessages(user) {
+    const messagesElm = document.querySelector(&#34;#chat-messages&#34;);
+    // コールバック関数
+    return (snapshot) =&gt; {
+        const newMessages = [];
+        // messageを一つずつ取得し、表示用HTMLを組み立て
+        snapshot.forEach((message) =&gt; {
+
+            if (user.uid === message.val().userId) {
+                // メッセージの送信者が自分の場合
+                newMessages.push(`
+          &lt;div class=&#34;chat-message-me&#34;&gt;
+            &lt;div class=&#34;chat-message__text&#34;&gt;
+              &lt;div class=&#34;chat-message__text-message&#34;&gt;
+                ${escapeHTML(message.val().text)}
+              &lt;/div&gt;
+              &lt;div class=&#34;chat-message__text-date&#34;&gt;
+                ${escapeHTML(formatDate(new Date(message.val().date)))}
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        `);
+            } else {
+                // 自分以外が送信したメッセージの場合
+                newMessages.push(`
+          &lt;div class=&#34;chat-message-you&#34;&gt;
+            &lt;div class=&#34;chat-message__icon&#34;&gt;
+              &lt;img src=&#34;${escapeHTML(usersList[message.val().userId].photoURL)}&#34; /&gt;
+            &lt;/div&gt;
+            &lt;div class=&#34;chat-message__text&#34;&gt;
+              &lt;div class=&#34;chat-message__text-user-name&#34;&gt;
+                ${escapeHTML(usersList[message.val().userId].displayName)}
+              &lt;/div&gt;
+              &lt;div class=&#34;chat-message__text-message&#34;&gt;
+                ${escapeHTML(message.val().text)}
+              &lt;/div&gt;
+              &lt;div class=&#34;chat-message__text-date&#34;&gt;
+                ${escapeHTML(formatDate(new Date(message.val().date)))}
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        `);
+            }
+        });
+        // メッセージ表示エリアに描画
+        messagesElm.innerHTML = `
+      &lt;div&gt;
+        ${newMessages.join(&#34;&#34;)}
+      &lt;/div&gt;
+    `;
+        // スクロール最下部へ移動
+        messagesElm.scrollTop = messagesElm.scrollHeight;
+    }
+}
+</code></pre>
+<p>こちらの処理は、先程ユーザ一覧を表示した際の処理内容とおおまかな流れは同じです。</p>
+<h2 is-upgraded>呼び出し部分の追加</h2>
+<p>以下の <code>// 新</code>規コード追加部分 を追加してください。</p>
+<pre><code language="language-javascript" class="language-javascript">// ----- メッセージ送信処理箇所 ----- //
+function enableMessages(user) {
+    const messagesDb = firebase.database().ref(&#34;messages&#34;);
+
+    // 新規コード追加部分
+    messagesDb.on(&#34;value&#34;, renderMessages(user));
+
+    // メッセージ送信イベント登録
+    const messageTextInput = document.querySelector(&#34;#message-text&#34;);
+    const messageButton = document.querySelector(&#34;#message-submit-button&#34;);
+
+    // 送信ボタンが押された場合
+    messageButton.addEventListener(&#34;click&#34;, () =&gt; {
+        // DBへ新規メッセージの登録
+        messagesDb.push({
+            userId: user.uid,
+            date: new Date().getTime(), // タイムスタンプをセット (例：1602862031298)
+            text: messageTextInput.value,
+        });
+        // フォームの内容をリセット
+        messageTextInput.value = &#34;&#34;;
+    });
+}
+</code></pre>
+<p>こちらもユーザ一覧を表示した際と同じく、<code>on()</code> メソッドを利用して、変更があった際に <code>renderMessages()</code> を呼び出すようにしています。</p>
+<h2 is-upgraded>動作確認をしてみる</h2>
+<p>それでは、実際にメッセージを送ってみます。</p>
+<p class="image-container"><img src="img\61abc8178a9b3eb8.png"></p>
+<p>別のタブで新しく開いて、別のアカウントでログインするか、デプロイして他の人に共有することで他のアカウントともチャットできます。</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="まとめ" duration="0">
+        <p>Duration 00:05:00</p>
+<p>ハンズオンお疲れ様でした。</p>
+<p>今回のハンズオンでは、Firebaseの機能としては、</p>
+<ul>
+<li>Firebase CLI  <ul>
+<li>Firebaseをコマンドラインで作成 / 編集 / 操作できるツール</li>
+</ul>
+</li>
+<li>Firebase Hosting  <ul>
+<li>Webアプリをデプロイできる</li>
+</ul>
+</li>
+<li>Firebase Authentication  <ul>
+<li>認証を導入できる</li>
+</ul>
+</li>
+<li>Realtime Database  <ul>
+<li>NoSQLのデータベースを導入できる</li>
+<li>同期させることができる</li>
+</ul>
+</li>
+</ul>
+<p>を実際に使用しました。</p>
+<p>また、RealTimeDatabaseでは以下の3つのメソッドを使用しました。</p>
+<ul>
+<li><code>on()</code> : データベースを監視し変更等を同期できる</li>
+<li><code>set()</code> : データベースへの新規追加 / 更新が可能</li>
+<li><code>push()</code> : データベースへの新規追加が可能（IDはランダム）</li>
+</ul>
+<p>Firebaseの機能は勿論これだけではありません。 ただ、一部分を触っただけでもわかる通り、簡単に実装でき、高品質のアプリケーションを開発することが可能です。 趣味の開発やハッカソンやコンテスト等で導入してみてはいかがでしょうか？</p>
 
 
       </google-codelab-step>

@@ -24,8 +24,9 @@ Firebaseには18個以上の製品があります。
 
 ### Firebase Authentication
 
+Firebase Authenticationは、SNSなどの会員情報を用いた認証をアプリケーションに導入できます。
 
-[]
+[Firebase Authentication - Firebase](https://firebase.google.com/docs/auth?hl=ja)
 
 ### Firebase Hosting
 
@@ -304,7 +305,7 @@ Duration: 0:05:00
 Authentication（認証機能）の設定を行います。
 今回はGoogleアカウントによる認証のみに対応させます。
 
-右側のナビゲーションから**Authentication**を選択し、**Sign-in method**のタブを開いてください。
+左側のナビゲーションから**Authentication**を選択し、**Sign-in method**のタブを開いてください。
 
 ![](./img/auth1.png)
 
@@ -325,7 +326,7 @@ Authentication（認証機能）の設定を行います。
 Duration: 0:02:00
 
 Firebase用のSDKを追加します。
-`public/index.html`を開き、以下のように`<!-- FirebaseのSDK追加部分 -->`の部分にSDKを追加してください。
+`public/index.html` を開き、以下のように `<!-- FirebaseのSDK追加部分 -->` の部分にSDKを追加してください。
 
 ```html
 <!DOCTYPE html>
@@ -347,6 +348,8 @@ Firebase用のSDKを追加します。
 </head>
 ```
 
+`/__/firebase/firebase-app.js` と `/__/firebase/init.js` は必ず必要ですが、`/__/firebase/7.23.0/firebase-auth.js` や `/__/firebase/7.23.0/firebase-database.js` は利用するプロダクトを追加していますので、プロジェクトによって呼び出す製品は変わってきます。
+
 ## 認証処理の作成
 Duration: 0:10:00
 
@@ -354,7 +357,7 @@ Duration: 0:10:00
 
 ### 認証処理の作成
 
-`public/js/index.js`へ以下のコードを追加します。
+`public/js/index.js` へ以下のコードを追加します。
 
 ```javascript
 // 認証処理作成箇所
@@ -380,10 +383,13 @@ function auth() {
 ここでは、Google認証のポップアップを呼び出し認証を行った結果を受け取ります。
 
 1. Googleプロバイダオブジェクトのインスタンスを作成
+
 ```javascript
   const provider = new firebase.auth.GoogleAuthProvider();
 ```
+
 2. 認証処理
+
 ```javascript
 firebase
     .auth()
@@ -399,6 +405,7 @@ firebase
       console.log({ error });
     });
 ```
+
 3. 成功した場合、認証結果（ユーザ情報）を受け取る
 ```javascript
     .then((result) => {
@@ -407,7 +414,9 @@ firebase
       enableMessages(user);
     })
 ```
+
 4. 失敗した場合、エラーをアラートにて表示
+
 ```javascript
     .catch(function (error) {
       // 認証失敗
@@ -462,4 +471,440 @@ $ firebase serve
 以下のようにポップアップが表示されればログイン成功です！
 
 ![](./img/auth7.png)
+
+
+## ユーザ一覧の作成
+Duration 00:10:00
+
+左側にユーザ一覧を作成します。
+
+![](./img/user1.png)
+
+### ユーザ情報の登録処理
+
+まずは、ユーザ情報をデータベースに更新します。
+先程作成した認証処理はAuthentication側がユーザ情報を持っていますので、現状ではデータベース内は空です。
+そのため、ユーザ登録された内容をデータベースへ格納する処理を追加します。
+
+```javascript
+// ----- ユーザ情報登録/更新処理 ----- //
+function updateUserinfo(user) {
+    const userDb = firebase.database().ref("users/" + user.uid);
+
+    userDb.set({
+        uid: user.uid,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+    });
+}
+```
+
+ここでは、 `set()` メソッドを用いて、値をデータベースへ格納しています。
+セットした値は users/XXXXXX(ユーザID) に格納されます。
+もし既に同じユーザIDが格納されている場合は上書されます。
+
+また、先程追加したコードも一部修正します。
+
+```javascript
+// ----- 認証処理作成箇所 ----- //
+function auth() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  // Google認証のポップアップ表示
+  firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then((result) => {
+        // 新規コード追加部分
+        console.log({ result });
+        updateUserinfo(result.user);
+      })
+      .catch(function (error) {
+        // 認証失敗
+        alert("アカウント連携に失敗しました");
+        console.log({ error });
+      });
+}
+```
+
+`//新規コード追加部分`と書いてある部分を元々の内容を削除し、2行を追加してください。
+追加が完了後、再度 localhost:5000 へアクセスしログインしてみてください。
+
+ログインが完了したら、Firebaseのコンソールへアクセスし、**Realtime Database** を開いてください。
+以下のように usersドキュメントが追加されていればOKです。
+
+![](./img/user2.png)
+
+
+### ユーザ一覧を表示
+
+RealTimeDatabase へ保存したユーザ情報を表示します。
+以下のコードを追加してください。
+
+```javascript
+// ----- ユーザ一覧表示処理 ----- //
+function renderUserslist(user) {
+    const usersElm = document.querySelector("#users_list");
+
+    // コールバック関数
+    return (snapshot) => {
+        const newUsers = [];
+
+        // 自身を追加
+        newUsers.push(`
+          <div class="users_list__box-me">
+            <div class="users_list__icon">
+              <img src="${escapeHTML(user.photoURL)}" />
+            </div><div class="users_list__status">
+              <p class="users_list__name">${escapeHTML(user.displayName)}</p>
+            </div>
+          </div>
+        `);
+
+        // ユーザ情報を一つずつ取得し、表示用HTMLを組み立て
+        snapshot.forEach((send_user) => {
+            // 自分以外のユーザのみ追加
+            if (user.uid !== send_user.val().uid) {
+                newUsers.push(`
+          <div class="users_list__box">
+            <div class="users_list__icon">
+              <img src="${escapeHTML(send_user.val().photoURL)}" />
+            </div><div class="users_list__status">
+              <p class="users_list__name">${escapeHTML(send_user.val().displayName)}</p>
+            </div>
+          </div>
+        `);
+            }
+        });
+        // ユーザ一覧表示エリアに描画
+        usersElm.innerHTML = `
+      <div>
+        ${newUsers.join("")}
+      </div>
+    `;
+        // スクロール最下部へ移動
+        usersElm.scrollTop = usersElm.scrollHeight;
+    }
+}
+```
+
+少しコードが長くなってしまいましたが、要はユーザ情報を取得し、HTMLと結合させて描画しています。
+自身の情報は必ず一番上に来るようにするため、一番最初に格納しています。
+全ユーザ情報を描画する際には自身の情報は飛ばす用に if文を用いて分岐しています。
+
+続いて、ユーザ情報更新処理側にコードを追加します。
+
+```javascript
+// ----- ユーザ情報登録/更新処理 ----- //
+function updateUserinfo(user) {
+    const userDb = firebase.database().ref("users/" + user.uid);
+
+    userDb.set({
+        uid: user.uid,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+    });
+
+    // 新規コード追加部分
+    const usersDb = firebase.database().ref("users");
+    usersDb.on("value", renderUserslist(user));
+}
+```
+
+末尾2行が新たに追加した部分です。
+使用している `on()` メソッドによりデータベースの変更を監視することが出来ます。
+そのため、新しくユーザが追加された場合もページをリロードすることなく追加されるようになります。
+
+### 実際に表示してみる
+
+さて、再びログインしてみてください。
+ログイン後、左側に自分のアイコンと名前が表示されていれば完了です。
+
+
+## メッセージの送信処理作成
+Duration 00:10:00
+
+続いてメッセージの送信処理を作成します。
+
+### 送信処理部分作成
+
+以下のコードを追加してください。
+
+```javascript
+// ----- メッセージ送信処理箇所 ----- //
+function enableMessages(user) {
+    const messagesDb = firebase.database().ref("messages");
+
+    // メッセージ送信イベント登録
+    const messageTextInput = document.querySelector("#message-text");
+    const messageButton = document.querySelector("#message-submit-button");
+
+    // 送信ボタンが押された場合
+    messageButton.addEventListener("click", () => {
+        // DBへ新規メッセージの登録
+        messagesDb.push({
+            userId: user.uid,
+            date: new Date().getTime(), // タイムスタンプをセット (例：1602862031298)
+            text: messageTextInput.value,
+        });
+        // フォームの内容をリセット
+        messageTextInput.value = "";
+    });
+}
+```
+
+ここでは、送信ボタンが押された際にテキストエリア内の文字列をデータベースへメッセージとして保存する処理を行っています。
+`push()` メソッドを使うことでデータベース内の message 直下に
+
+- ユーザID
+- 送信日時
+- 送信内容
+
+が格納されます。
+尚、 `push()` メソッドを利用した場合のメッセージ毎のIDはユニークなIDをランダムに振り分けられます。
+
+
+### 呼び出し部分の追加
+
+送信処理部分を作成しましたので、続いて送信処理を呼び出す部分を追記したいと思います。
+
+```javascript
+// ----- 認証処理作成箇所 ----- //
+function auth() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  // Google認証のポップアップ表示
+  firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then((result) => {
+        console.log({ result });
+        updateUserinfo(result.user);
+
+        // 新規コード追加部分
+        enableMessages(result.user);
+      })
+      .catch(function (error) {
+        // 認証失敗
+        alert("アカウント連携に失敗しました");
+        console.log({ error });
+      });
+}
+```
+
+`// 新規コード追加部分` の後ろの1行を追加してください。
+
+
+### データベースへメッセージが格納されることを確認
+
+ここまで完了したら、一度メッセージを送信してみてください。
+送信しても何も表示されないかと思います。
+しかし、データベースを再度開いてもらうと messages が新たに追加されており、内容が確認できるかと思います。
+
+![](./img/message1.png)
+
+これで送信処理の完成です。
+
+
+## メッセージの表示処理
+Duration 00:10:00
+
+先程追加した送信処理で送信した内容、他のユーザから送信された内容を表示できるように処理を追加します。
+
+### ユーザ一覧をグローバル変数で管理
+
+メッセージには送信したユーザに関する情報が、ユニークなIDしかありません。
+そのため、ユーザ名やアイコンを取得するにはユーザの情報が必要になります。
+まずは、ユーザ情報を格納する変数を用意します。
+
+```javascript
+// ----- グローバル変数 ----- //
+let usersList = []; // ユーザ一覧
+```
+
+続いて、ユーザ一覧表示処理 に `// 新規コード追加部分` の1行処理を追加します。
+
+```javascript
+// ----- ユーザ一覧表示処理 ----- //
+function renderUserslist(user) {
+    const usersElm = document.querySelector("#users_list");
+
+    // コールバック関数
+    return (snapshot) => {
+        const newUsers = [];
+
+        // 新規コード追加部分
+        usersList = snapshot.val();
+
+        // 自身を追加
+        newUsers.push(`
+          <div class="users_list__box-me">
+            <div class="users_list__icon">
+              <img src="${escapeHTML(user.photoURL)}" />
+            </div><div class="users_list__status">
+              <p class="users_list__name">${escapeHTML(user.displayName)}</p>
+            </div>
+          </div>
+        `);
+
+        // ユーザ情報を一つずつ取得し、表示用HTMLを組み立て
+        snapshot.forEach((send_user) => {
+            // 自分以外のユーザのみ追加
+            if (user.uid !== send_user.val().uid) {
+                newUsers.push(`
+          <div class="users_list__box">
+            <div class="users_list__icon">
+              <img src="${escapeHTML(send_user.val().photoURL)}" />
+            </div><div class="users_list__status">
+              <p class="users_list__name">${escapeHTML(send_user.val().displayName)}</p>
+            </div>
+          </div>
+        `);
+            }
+        });
+        // ユーザ一覧表示エリアに描画
+        usersElm.innerHTML = `
+      <div>
+        ${newUsers.join("")}
+      </div>
+    `;
+        // スクロール最下部へ移動
+        usersElm.scrollTop = usersElm.scrollHeight;
+    }
+}
+```
+
+これで、ユーザ情報一覧の取得が可能になりました。
+
+
+### 表示処理部分の追加
+
+以下のコードを追加してください。
+
+``` javascript
+// ----- メッセージ表示処理箇所 ----- //
+function renderMessages(user) {
+    const messagesElm = document.querySelector("#chat-messages");
+    // コールバック関数
+    return (snapshot) => {
+        const newMessages = [];
+        // messageを一つずつ取得し、表示用HTMLを組み立て
+        snapshot.forEach((message) => {
+
+            if (user.uid === message.val().userId) {
+                // メッセージの送信者が自分の場合
+                newMessages.push(`
+          <div class="chat-message-me">
+            <div class="chat-message__text">
+              <div class="chat-message__text-message">
+                ${escapeHTML(message.val().text)}
+              </div>
+              <div class="chat-message__text-date">
+                ${escapeHTML(formatDate(new Date(message.val().date)))}
+              </div>
+            </div>
+          </div>
+        `);
+            } else {
+                // 自分以外が送信したメッセージの場合
+                newMessages.push(`
+          <div class="chat-message-you">
+            <div class="chat-message__icon">
+              <img src="${escapeHTML(usersList[message.val().userId].photoURL)}" />
+            </div>
+            <div class="chat-message__text">
+              <div class="chat-message__text-user-name">
+                ${escapeHTML(usersList[message.val().userId].displayName)}
+              </div>
+              <div class="chat-message__text-message">
+                ${escapeHTML(message.val().text)}
+              </div>
+              <div class="chat-message__text-date">
+                ${escapeHTML(formatDate(new Date(message.val().date)))}
+              </div>
+            </div>
+          </div>
+        `);
+            }
+        });
+        // メッセージ表示エリアに描画
+        messagesElm.innerHTML = `
+      <div>
+        ${newMessages.join("")}
+      </div>
+    `;
+        // スクロール最下部へ移動
+        messagesElm.scrollTop = messagesElm.scrollHeight;
+    }
+}
+```
+
+こちらの処理は、先程ユーザ一覧を表示した際の処理内容とおおまかな流れは同じです。
+
+### 呼び出し部分の追加
+
+以下の `// 新規コード追加部分` を追加してください。
+
+```javascript
+// ----- メッセージ送信処理箇所 ----- //
+function enableMessages(user) {
+    const messagesDb = firebase.database().ref("messages");
+
+    // 新規コード追加部分
+    messagesDb.on("value", renderMessages(user));
+
+    // メッセージ送信イベント登録
+    const messageTextInput = document.querySelector("#message-text");
+    const messageButton = document.querySelector("#message-submit-button");
+
+    // 送信ボタンが押された場合
+    messageButton.addEventListener("click", () => {
+        // DBへ新規メッセージの登録
+        messagesDb.push({
+            userId: user.uid,
+            date: new Date().getTime(), // タイムスタンプをセット (例：1602862031298)
+            text: messageTextInput.value,
+        });
+        // フォームの内容をリセット
+        messageTextInput.value = "";
+    });
+}
+```
+
+こちらもユーザ一覧を表示した際と同じく、`on()` メソッドを利用して、変更があった際に `renderMessages()` を呼び出すようにしています。
+
+### 動作確認をしてみる
+
+それでは、実際にメッセージを送ってみます。
+
+![](./img/message2.png)
+
+別のタブで新しく開いて、別のアカウントでログインするか、デプロイして他の人に共有することで他のアカウントともチャットできます。
+
+## まとめ
+Duration 00:05:00
+
+ハンズオンお疲れ様でした。
+
+今回のハンズオンでは、Firebaseの機能としては、
+
+- Firebase CLI
+  - Firebaseをコマンドラインで作成 / 編集 / 操作できるツール
+- Firebase Hosting
+  - Webアプリをデプロイできる
+- Firebase Authentication
+  - 認証を導入できる
+- Realtime Database
+  - NoSQLのデータベースを導入できる
+  - 同期させることができる
+
+を実際に使用しました。
+
+また、RealTimeDatabaseでは以下の3つのメソッドを使用しました。
+
+- `on()` : データベースを監視し変更等を同期できる
+- `set()` : データベースへの新規追加 / 更新が可能
+- `push()` : データベースへの新規追加が可能（IDはランダム）
+
+Firebaseの機能は勿論これだけではありません。
+ただ、一部分を触っただけでもわかる通り、簡単に実装でき、高品質のアプリケーションを開発することが可能です。
+趣味の開発やハッカソンやコンテスト等で導入してみてはいかがでしょうか？
 
