@@ -4,7 +4,7 @@ id: docs
 categories: codelab,markdown
 environments: Web
 status: Published
-feedback link: A link where users can go to provide feedback (Maybe the git repo)
+feedback link: https://github.com/OthloTech/document-e62
 analytics account: Google Analytics ID
 
 # Firebase×JavaScript 1DAY実践ハンズオン
