@@ -324,6 +324,7 @@ Authentication（認証機能）の設定を行います。
 ![](./img/auth2.png)
 
 表示されたら、
+
 1. **有効にする**をONに
 2. **プロジェクトのサポートメール**を選択
 3. **保存**を押してください。
@@ -392,13 +393,13 @@ function auth() {
 
 ここでは、Google認証のポップアップを呼び出し認証を行った結果を受け取ります。
 
-1. Googleプロバイダオブジェクトのインスタンスを作成
+１． Googleプロバイダオブジェクトのインスタンスを作成
 
 ```javascript
   const provider = new firebase.auth.GoogleAuthProvider();
 ```
 
-2. 認証処理
+２． 認証処理
 
 ```javascript
 firebase
@@ -416,7 +417,7 @@ firebase
     });
 ```
 
-3. 成功した場合、認証結果（ユーザ情報）を受け取る
+３． 成功した場合、認証結果（ユーザ情報）を受け取る
 
 ```javascript
     .then((result) => {
@@ -426,7 +427,7 @@ firebase
     })
 ```
 
-4. 失敗した場合、エラーをアラートにて表示
+４． 失敗した場合、エラーをアラートにて表示
 
 ```javascript
     .catch(function (error) {

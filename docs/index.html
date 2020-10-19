@@ -291,14 +291,10 @@ function auth() {
 }
 </code></pre>
 <p>ここでは、Google認証のポップアップを呼び出し認証を行った結果を受け取ります。</p>
-<ol type="1">
-<li>Googleプロバイダオブジェクトのインスタンスを作成</li>
-</ol>
+<p>１． Googleプロバイダオブジェクトのインスタンスを作成</p>
 <pre><code language="language-javascript" class="language-javascript">  const provider = new firebase.auth.GoogleAuthProvider();
 </code></pre>
-<ol type="1">
-<li>認証処理</li>
-</ol>
+<p>２． 認証処理</p>
 <pre><code language="language-javascript" class="language-javascript">firebase
     .auth()
     .signInWithPopup(provider)
@@ -313,18 +309,14 @@ function auth() {
       console.log({ error });
     });
 </code></pre>
-<ol type="1">
-<li>成功した場合、認証結果（ユーザ情報）を受け取る</li>
-</ol>
+<p>３． 成功した場合、認証結果（ユーザ情報）を受け取る</p>
 <pre><code language="language-javascript" class="language-javascript">    .then((result) =&gt; {
       // 認証成功
       alert(&#34;アカウント連携に成功しました&#34;);
       console.log(result);
     })
 </code></pre>
-<ol type="1">
-<li>失敗した場合、エラーをアラートにて表示</li>
-</ol>
+<p>４． 失敗した場合、エラーをアラートにて表示</p>
 <pre><code language="language-javascript" class="language-javascript">    .catch(function (error) {
       // 認証失敗
       alert(&#34;アカウント連携に失敗しました&#34;);
