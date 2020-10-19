@@ -145,7 +145,7 @@ git clone git@github.com:OthloTech/firebase-hands-on.git
 
 まずは、以下のサイトにアクセスしてください。
 
-[OthloTech/firebase-hands-on - GitHub](git@github.com:OthloTech/firebase-hands-on.git)
+[OthloTech/firebase-hands-on - GitHub](https://github.com/OthloTech/firebase-hands-on)
 
 続いて、緑色のcodeボタンを押して、「Download ZIP」を押してZIPファイルをダウンロードしてください。
 
@@ -187,7 +187,7 @@ $ firebase init
 選択方法はスペースキーを押すと選択できます。十字キーで移動し、選択完了後はEnterキーを押してください。
 
 続いて、プロジェクトの選択を行います。
-実は先程ブラウザ上で行ったプロジェクト作成作業はCLIでもできるのですが、今回は作成してあるので、「Use an existing project」を選択します。
+実は先程ブラウザ上で行ったプロジェクト作成作業はCLIでもできるのですが、今回は作成してあるので、「Create a new project」を選択します。
 
 ```
 ? Please select an option:
@@ -198,7 +198,8 @@ $ firebase init
 ```
 
 プロジェクトのIDを指定してください。
-但し、IDは必ず全体で一意のIDである必要があるため、ありふれた名前はお勧めしません。
+但し、**IDは必ず全体で一意のIDである必要があります。**
+被らないような文字列を指定してください。（6～30文字）
 
 ```
 ? Please select an option: Create a new project
@@ -208,11 +209,14 @@ i  If you want to create a project in a Google Cloud organization or folder, ple
 ```
 
 作成するプロジェクトの名前を指定してください。
+
 ```
 ? What would you like to call your project? (defaults to your project ID)
 ```
-ここはエンターキーを押せば先程指定したIDが指定されます。
-コンソールでの表示名に使用されたりするので、分かり易い名前を付けてみてはどうでしょうか？
+
+コンソールでの表示名に使用されたりするので、分かり易い名前をお勧めします。
+この名前に関しては一意である必要はありません。
+尚、エンターキーを押せば先程指定したIDが名前にも適用されます。
 
 
 あとはほとんどEnterで大丈夫です。
@@ -237,6 +241,12 @@ Noで大丈夫です。
 ? File public/404.html already exists. Overwrite? No
 ? File public/index.html already exists. Overwrite? No
 ```
+
+### ここでエラーが出る場合
+
+1. 指定したIDが既に存在する可能性がある（再度IDを指定してください）
+2. Firebaseの利用規約に同意していない（Webコンソールから一度プロジェクトを作ってみてください）
+3. プロジェクト内に「.firebaserc」ファイルが存在している（削除してください）
 
 ## Databaseの設定
 Duration: 0:05:00

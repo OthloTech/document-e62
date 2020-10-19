@@ -111,7 +111,7 @@
 </pre>
 <h2 is-upgraded>GitHubを利用されていない方</h2>
 <p>まずは、以下のサイトにアクセスしてください。</p>
-<p><a href="git@github.com:OthloTech/firebase-hands-on.git" target="_blank">OthloTech/firebase-hands-on - GitHub</a></p>
+<p><a href="https://github.com/OthloTech/firebase-hands-on" target="_blank">OthloTech/firebase-hands-on - GitHub</a></p>
 <p>続いて、緑色のcodeボタンを押して、「Download ZIP」を押してZIPファイルをダウンロードしてください。</p>
 <p class="image-container"><img src="img\87196144ff66680f.png"></p>
 <p>ダウンロードした zipファイルを開き、中のプロジェクトを任意のディレクトリにペーストしてください。</p>
@@ -141,14 +141,14 @@
  ◯ Remote Config: Get, deploy, and rollback configurations for Remote Config
 </pre>
 <p>選択方法はスペースキーを押すと選択できます。十字キーで移動し、選択完了後はEnterキーを押してください。</p>
-<p>続いて、プロジェクトの選択を行います。 実は先程ブラウザ上で行ったプロジェクト作成作業はCLIでもできるのですが、今回は作成してあるので、「Use an existing project」を選択します。</p>
+<p>続いて、プロジェクトの選択を行います。 実は先程ブラウザ上で行ったプロジェクト作成作業はCLIでもできるのですが、今回は作成してあるので、「Create a new project」を選択します。</p>
 <pre><code>? Please select an option:
   Use an existing project
 &gt; Create a new project
   Add Firebase to an existing Google Cloud Platform project
   Don&#39;t set up a default project
 </code></pre>
-<p>プロジェクトのIDを指定してください。 但し、IDは必ず全体で一意のIDである必要があるため、ありふれた名前はお勧めしません。</p>
+<p>プロジェクトのIDを指定してください。 但し、<strong>IDは必ず全体で一意のIDである必要があります。</strong> 被らないような文字列を指定してください。（6～30文字）</p>
 <pre><code>? Please select an option: Create a new project
 i  If you want to create a project in a Google Cloud organization or folder, please use &#34;firebase projects:create&#34; instead, and return to this command when you&#39;ve created the project.
 ? Please specify a unique project id (warning: cannot be modified afterward) [6-30 characters]:
@@ -157,7 +157,7 @@ i  If you want to create a project in a Google Cloud organization or folder, ple
 <p>作成するプロジェクトの名前を指定してください。</p>
 <pre><code>? What would you like to call your project? (defaults to your project ID)
 </code></pre>
-<p>ここはエンターキーを押せば先程指定したIDが指定されます。 コンソールでの表示名に使用されたりするので、分かり易い名前を付けてみてはどうでしょうか？</p>
+<p>コンソールでの表示名に使用されたりするので、分かり易い名前をお勧めします。 この名前に関しては一意である必要はありません。 尚、エンターキーを押せば先程指定したIDが名前にも適用されます。</p>
 <p>あとはほとんどEnterで大丈夫です。</p>
 <p>データベースのルールを記載するファイルの名前を聞いてます。 デフォルトで大丈夫なのでEnter</p>
 <pre><code>? What file should be used for Database Rules? (database.rules.json)
@@ -170,6 +170,12 @@ i  If you want to create a project in a Google Cloud organization or folder, ple
 ? File public/404.html already exists. Overwrite? No
 ? File public/index.html already exists. Overwrite? No
 </code></pre>
+<h2 is-upgraded>ここでエラーが出る場合</h2>
+<ol type="1">
+<li>指定したIDが既に存在する可能性がある（再度IDを指定してください）</li>
+<li>Firebaseの利用規約に同意していない（Webコンソールから一度プロジェクトを作ってみてください）</li>
+<li>プロジェクト内に「.firebaserc」ファイルが存在している（削除してください）</li>
+</ol>
 
 
       </google-codelab-step>
